@@ -104,3 +104,28 @@ class Solution:
 
 https://docs.python.org/3.12/library/stdtypes.html#set
 
+### フロイドの循環検出法（Floyd's cycle-finding algorithm）
+
+fastとslowを同時にスタートさせると、もし循環していればfastがslowに追い付くという考え方。空間計算量がO(1)で済む。
+
+> [!WARNING]
+> ただし、もともと知らないと基本的には書けない（＝問題が与えられてから思いつくのは困難）
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        fast = head
+        slow = head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            if fast is slow:
+                return True
+        return False
+```
