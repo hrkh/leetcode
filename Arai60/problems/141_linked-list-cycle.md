@@ -129,3 +129,81 @@ class Solution:
                 return True
         return False
 ```
+
+### 再帰
+
+setを用いた解を再帰で書いてみる。
+
+これはMemory Limit Exceeded となるのでボツ（再帰のたびに集合が作られてしまう）。
+
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        def _hasCycle(
+            current: Optional[ListNode],
+            traversed: Optional[set[ListNode]]
+        ) -> bool:
+            if not current:
+                return False
+            traversed = traversed or set()
+            if current in traversed:
+                return True
+            return _hasCycle(current.next, traversed | {current})
+        
+        return _hasCycle(head, None)
+```
+
+集合を外に出すパターン。これなら通る。
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        traversed = set()
+
+    def _hasCycle(current: Optional[ListNode]) -> bool:
+            if not current:
+                return False
+            if current in traversed:
+                return True
+            traversed.add(current)
+            return _hasCycle(current.next)
+        
+        return _hasCycle(head)
+```
+
+フロイドの循環検出法も再帰で書いてみる。
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        def _hasCycle(fast: Optional[ListNode], slow: Optional[ListNode]) -> bool:
+            if (not fast) or (not fast.next):
+                return False
+            fast = fast.next.next
+            slow = slow.next
+            if fast is slow:
+                return True
+
+            return _hasCycle(fast, slow)
+        
+        return _hasCycle(head, head)
+```
