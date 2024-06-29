@@ -47,3 +47,60 @@ class Solution:
 
 * 回答時間
   * 2分くらい
+
+## 4th
+
+### setを用いた解の亜種
+
+1stのコードはsetを用いて「Falseの条件を満たすまでループ、Trueの条件を満たしたらreturn」という考え方のものだった。
+
+これについては2つの亜種を考えることができる。
+
+* Trueの条件を満たすまでループ、Falseの条件を満たしたらreturn
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        traversed = set()
+        current = head
+        while current not in traversed:
+            if not current:
+                return False
+            traversed.add(current)
+            current = current.next
+        return True
+```
+
+* 無条件でループ、Trueの条件かFalseの条件を満たしたらreturn
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        traversed = set()
+        current = head
+        while True:
+            if not current:
+                return False
+            if current in traversed:
+                return True
+            traversed.add(current)
+            current = current.next
+```
+
+> [!TIP]
+> set()について読む
+
+https://docs.python.org/3.12/library/stdtypes.html#set
+
