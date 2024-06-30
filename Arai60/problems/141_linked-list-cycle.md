@@ -173,14 +173,14 @@ class Solution:
     def hasCycle(self, head: Optional[ListNode]) -> bool:
         traversed = set()
 
-    def _hasCycle(current: Optional[ListNode]) -> bool:
+        def _hasCycle(current: Optional[ListNode]) -> bool:
             if not current:
                 return False
             if current in traversed:
                 return True
             traversed.add(current)
             return _hasCycle(current.next)
-        
+
         return _hasCycle(head)
 ```
 
