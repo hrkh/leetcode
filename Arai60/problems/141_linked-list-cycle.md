@@ -136,7 +136,6 @@ setを用いた解を再帰で書いてみる。
 
 これはMemory Limit Exceeded となるのでボツ（再帰のたびに集合が作られてしまう）。
 
-
 ```python
 # Definition for singly-linked list.
 # class ListNode:
@@ -158,6 +157,31 @@ class Solution:
             return _hasCycle(current.next, traversed | {current})
         
         return _hasCycle(head, None)
+```
+
+（同様に通らないが）レビューを元に修正。
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        def _hasCycle(
+            current: Optional[ListNode],
+            traversed: set[ListNode]  # Optionalは不要になる
+        ) -> bool:
+            if not current:
+                return False
+            # ここで traversed = traversed or set() しなくてよくなる
+            if current in traversed:
+                return True
+            return _hasCycle(current.next, traversed | {current})
+
+        return _hasCycle(head, set())  # ここでset()を与える
 ```
 
 集合を外に出すパターン。これなら通る。
