@@ -208,6 +208,28 @@ class Solution:
         return _hasCycle(head)
 ```
 
+再帰の別バージョン。走査済み集合を内部関数の外に出さないパターン。
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        def _hasCycle(current: Optional[ListNode], traversed: set[ListNode]) -> bool:
+            if not current:
+                return False
+            if current in traversed:
+                return True
+            traversed.add(current)
+            return _hasCycle(current.next, traversed)
+        
+        return _hasCycle(head, set())
+```
+
 フロイドの循環検出法も再帰で書いてみる。
 
 ```python
