@@ -116,6 +116,147 @@ class Solution:
         return None
 ```
 
+## 4th
+
+### 4つの構造を比較してみる
+
+https://discord.com/channels/1084280443945353267/1221030192609493053/1225674901445283860
+
+#### 1. 関数化
+
+```python
+while fast and fast.next:  # A
+    # 短いX ↓
+    fast = fast.next.next
+    slow = slow.next
+    # 短いX ↑
+    if fast is slow:  # B
+        return _findCycleStart(fast) # Y() = C
+# 短いZ（今回のケースでは存在しない）
+return None  # D
+```
+
+* これは3rdの解法で採用したパターン
+* 処理の流れに違和感がない
+* 長い処理のまとまりに名前がついていて理解しやすい
+
+#### 2. Python独自の文法（while ~ else）
+
+```python
+while fast and fast.next:  # A
+    # 短いX ↓
+    fast = fast.next.next
+    slow = slow.next
+    # 短いX ↑
+    if fast is slow:  # B
+        break
+else:
+    # 短いZ（今回のケースでは存在しない）
+    return None  # D
+# 長いY ↓
+from_head = head
+from_collision = fast
+while from_head is not from_collision:
+    from_head = from_head.next
+    from_collision = from_collision.next
+# 長いY ↑
+return from_head  # C
+```
+
+* そもそも、while ~ elseの挙動自体がわかりにくい
+* AとDが遠く、BとYが離れているのが読みにくい
+
+#### 3. 無限ループ
+
+```python
+while 1:
+    if not (fast and fast.next):  # A
+        # 短いZ（今回のケースでは存在しない）
+        return None  # D
+    # 短いX ↓
+    fast = fast.next.next
+    slow = slow.next
+    # 短いX ↑
+    if fast is slow:  # B
+        break
+
+# 長いY ↓
+from_head = head
+from_collision = fast
+while from_head is not from_collision:
+    from_head = from_head.next
+    from_collision = from_collision.next
+# 長いY ↑
+return from_head  # C
+```
+
+* 処理の流れとしてはわかりやすい
+* 長い処理のまとまりに名前があった方がよりわかりやすいと感じる
+
+#### 4. 関数化
+
+```python
+def has_cycle():  # F
+    while fast and fast.next:  # A
+        # 短いX ↓
+        fast = fast.next.next
+        slow = slow.next
+        # 短いX ↑
+        if fast is slow:  # B
+            return True
+        return False
+
+if not has_cycle():  # F
+    # 短いZ（今回のケースでは存在しない）
+    return None  # D
+
+# 長いY ↓
+from_head = head
+from_collision =  ... # これが取れない！
+```
+
+そのままだとうまくいかないので、少し書き換えてみる。
+
+-> booleanを返すF()の代わりに、Optional[ListNode]を返すF'()を採用する。つまり、
+  * Trueのときは対応する値を返す
+  * FalseのときはNoneを返す
+
+```python
+def find_collision():  # F'
+    while fast and fast.next:  # A
+        # 短いX ↓
+        fast = fast.next.next
+        slow = slow.next
+        # 短いX ↑
+        if fast is slow:  # B
+            return fast
+        return None
+
+if not (collision := find_collision()):  # F'
+    # 短いZ（今回のケースでは存在しない）
+    return None  # D
+
+# 長いY ↓
+from_head = head
+from_collision = collision
+while from_head is not from_collision:
+    from_head = from_head.next
+    from_collision = from_collision.next
+# 長いY ↑
+return from_head  # C
+```
+
+* 処理の流れがわかりやすい
+* 長い処理のまとまりに名前がついていてわかりやすい
+* 長いYにも名前があってもよいのでは？と感じた
+
+#### まとめ
+
+* 長い処理には名前をつけるとわかりやすい
+* 処理の流れが素直だとわかりやすい
+
+-> 4.関数化をベースにしつつ、長いYも関数化する（1.関数化を取り入れる）のがわかりやすそう
+
 ## 気になったこと、調べたこと
 
 * ListNodeを普通にset()に入れているけど、問題ないのか？
