@@ -257,6 +257,51 @@ return from_head  # C
 
 -> 4.関数化をベースにしつつ、長いYも関数化する（1.関数化を取り入れる）のがわかりやすそう
 
+### 指摘事項の反映
+
+* 関数を内部で定義せず外に出す
+* フロイドの循環検出法を使っていることを書く
+* 4つの構造を比較した結果を活かす
+  * 4.関数化をベースにしつつ、長いYも関数化する（=1.関数化を取り入れる）
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def findCollision(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        """Floyd's cycle-finding algorithm を実行し、先行ポインタが追いついた時点のノードを返す。
+        ただし、先行ポインタが追いつかず、リストの末尾に到達してしまった場合はNoneを返す。
+        """
+        fast = head
+        slow = head
+
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            if fast is slow:
+                return fast
+        return None
+
+    def findCycleStart(self, head: ListNode, collision: ListNode) -> ListNode:
+        """Floyd's cycle-finding algorithm を実行し、循環の先頭ノードを求める。"""
+        from_head = head
+        from_collision = collision
+
+        while from_head is not from_collision:
+            from_head = from_head.next
+            from_collision = from_collision.next
+        return from_head
+
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if (collision := self.findCollision(head)):
+            return self.findCycleStart(head, collision)
+        return None
+```
+
 ## 気になったこと、調べたこと
 
 * ListNodeを普通にset()に入れているけど、問題ないのか？
