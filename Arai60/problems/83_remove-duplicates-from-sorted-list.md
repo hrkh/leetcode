@@ -107,3 +107,9 @@ class Solution:
             current_node = current_node.next 
         return head
 ```
+
+# その他
+
+> [!TIP]
+> Pythonにおける `:=` (walrus operator) が利用可能になったのはPython3.8から
+> https://docs.python.org/3/whatsnew/3.8.html#assignment-expressions
