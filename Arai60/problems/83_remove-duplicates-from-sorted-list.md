@@ -108,6 +108,24 @@ class Solution:
         return head
 ```
 
+## 4th
+
+最終的にはこれが一番よさそう？
+
+* next_nodeを変数として置かなくてもcurrent_node.nextで十分わかる
+* continueを使えば内側のwhileをifに変えることも可能だが、current_nodeを進める処理とcurrent_node.nextを進める処理は別のループとして考えたい
+
+```python
+class Solution:
+    def deleteDuplicates(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        current_node = head
+        while current_node:
+            while current_node.next and current_node.next.val == current_node.val:
+                current_node.next = current_node.next.next
+            current_node = current_node.next
+        return head
+```
+
 # その他
 
 > [!TIP]
